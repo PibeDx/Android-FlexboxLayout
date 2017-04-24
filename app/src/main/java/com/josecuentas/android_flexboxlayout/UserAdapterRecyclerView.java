@@ -20,9 +20,9 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
     implements Filterable {
 
 
-    private List<User> mUserList;
-    private List<User> mUserFilterList;
-    private List<User> mUserTagList;
+    private List<Item> mUserList;
+    private List<Item> mUserFilterList;
+    private List<Item> mUserTagList;
     private OnListener mOnListener;
     private UserFilter mUserFilter;
 
@@ -30,8 +30,8 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
 
     }
 
-    public void setUserList(List<User> userList) {
-        mUserList = userList;
+    public void setUserList(List<? extends Item> userList) {
+        mUserList = (List<Item>) userList;
         mUserFilterList = new LinkedList<>(mUserList);
     }
 
@@ -39,15 +39,15 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
         mOnListener = onListener;
     }
 
-    public void setUserTagList(List<User> userTagList) {
-        mUserTagList = userTagList;
+    public void setUserTagList(List<? extends Item> userTagList) {
+        mUserTagList = (List<Item>) userTagList ;
     }
 
-    public void setUserFilterList(List<User> userFilterList) {
-        mUserFilterList = userFilterList;
+    public void setUserFilterList(List<? extends Item> userFilterList) {
+        mUserFilterList = (List<Item>) userFilterList;
     }
 
-    public List<User> getUserFilterList() {
+    public List<? extends Item> getUserFilterList() {
         return mUserFilterList;
     }
 
@@ -57,9 +57,9 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
     }
 
     @Override public void onBindViewHolder(final ViewHolderUser holder, final int position) {
-        final User user = mUserFilterList.get(holder.getAdapterPosition());
+        final Item user = mUserFilterList.get(holder.getAdapterPosition());
         //final User user = mUserList.get(position);
-        holder.mTviItem.setText(user.getName());
+        holder.mTviItem.setText(user.getValue());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 //createChild(user.getName());
@@ -89,10 +89,10 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
     class UserFilter extends Filter {
 
         UserAdapterRecyclerView adapter;
-        private List<User> userOriginalList;
-        private List<User> userFilterList;
+        private List<Item> userOriginalList;
+        private List<Item> userFilterList;
 
-        public UserFilter(UserAdapterRecyclerView adapter, List<User> userOriginalList) {
+        public UserFilter(UserAdapterRecyclerView adapter, List<Item> userOriginalList) {
             this.adapter = adapter;
             this.userOriginalList = new LinkedList<>(userOriginalList);
             this.userFilterList = new ArrayList<>();
@@ -105,8 +105,8 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
                 this.userFilterList.addAll(this.userOriginalList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                for (User user : this.userOriginalList) {
-                    String name = user.getName().toLowerCase();
+                for (Item user : this.userOriginalList) {
+                    String name = user.getValue().toLowerCase();
                     if (name.contains(filterPattern)) {
                         this.userFilterList.add(user);
                     }
@@ -121,7 +121,7 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
 
         @Override protected void publishResults(CharSequence constraint, FilterResults results) {
             this.adapter.mUserFilterList.clear();
-            this.adapter.mUserFilterList.addAll((ArrayList<User>)results.values);
+            this.adapter.mUserFilterList.addAll((ArrayList<Item> ) results.values);
             this.adapter.notifyDataSetChanged();
         }
     }
@@ -137,7 +137,7 @@ public class UserAdapterRecyclerView extends RecyclerView.Adapter<UserAdapterRec
     }
 
     public interface OnListener {
-        void onItemClick(User user);
+        void onItemClick(Item user);
     }
 
     @Override public Filter getFilter() {

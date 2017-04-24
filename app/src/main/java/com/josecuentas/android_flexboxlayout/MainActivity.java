@@ -74,12 +74,12 @@ public class MainActivity extends AppCompatActivity implements UserAdapterRecycl
         mRviContainer.setItemAnimator(null);
     }
 
-    public void createChild(User user) {
+    public void createChild(Item user) {
         LayoutInflater inflater = LayoutInflater.from(this);
         final View view =  inflater.inflate(R.layout.edit_icon_tag, flexContainer, false);
         view.setTag(user);
         TextView tviItem = (TextView) view.findViewById(R.id.row_tviItem);
-        tviItem.setText(user.getName());
+        tviItem.setText(user.getValue());
         View vieClose = view.findViewById(R.id.iviClose);
         vieClose.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements UserAdapterRecycl
         //mUserTagList.add(user);
     }
 
-    @Override public void onItemClick(User user) {
+    @Override public void onItemClick(Item user) {
         createChild(user);
     }
 }
