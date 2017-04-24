@@ -14,6 +14,7 @@
 
 
     <TextView
+        android:id="@+id/row_tviItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -21,6 +22,7 @@
         />
 
     <ImageView
+        android:id="@+id/iviClose"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginLeft="3dp"
