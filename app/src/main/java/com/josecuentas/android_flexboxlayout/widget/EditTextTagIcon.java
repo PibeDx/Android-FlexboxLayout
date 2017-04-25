@@ -1,70 +1,78 @@
-package com.josecuentas.android_flexboxlayout;
+package com.josecuentas.android_flexboxlayout.widget;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.josecuentas.android_flexboxlayout.Item;
+import com.josecuentas.android_flexboxlayout.R;
+import com.josecuentas.android_flexboxlayout.User;
+import com.josecuentas.android_flexboxlayout.UserAdapterRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-* Info: http://stackoverflow.com/a/34466167
-* */
+/**
+ * Created by jcuentas on 25/04/17.
+ */
 
-public class MainActivity extends AppCompatActivity implements UserAdapterRecyclerView.OnListener {
+public class EditTextTagIcon extends ConstraintLayout implements UserAdapterRecyclerView.OnListener {
 
     private FlexboxLayout flexContainer;
     private EditText mEteName;
     private RecyclerView mRviContainer;
-    private List<User> mUserList = new ArrayList<>();
-    private List<User> mUserTagList = new ArrayList<>();
+    private List<Item> mUserList = new ArrayList<>();
+    private List<Item> mUserTagList = new ArrayList<>();
     private UserAdapterRecyclerView adapter;
 
+    public EditTextTagIcon(Context context) {
+        super(context);
+        init();
+    }
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_flexbox);
+    public EditTextTagIcon(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
 
-        flexContainer = (FlexboxLayout) findViewById(R.id.flexContainer);
-        mEteName = (EditText) findViewById(R.id.eteName);
-        mRviContainer = (RecyclerView) findViewById(R.id.rviContainer);
+    public EditTextTagIcon(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
 
-
-        for (int i = 0; i < 10; i++) {
-            mUserList.add(new User("" + (i + 1), "user " + (i+1)));
-        }
+    private void init() {
+        View inflate = inflate(getContext(), R.layout.activity_flexbox, this);
+        flexContainer = (FlexboxLayout) inflate.findViewById(R.id.flexContainer);
+        mEteName = (EditText) inflate.findViewById(R.id.eteName);
+        mRviContainer = (RecyclerView) inflate.findViewById(R.id.rviContainer);
 
         mEteName.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 adapter.getFilter().filter(s);
             }
 
             @Override public void afterTextChanged(Editable s) {
-
             }
         });
 
         adapter = new UserAdapterRecyclerView();
         adapter.setUserList(mUserList);
         adapter.setUserTagList(mUserTagList);
-        //adapter.setUserFilterList(mUserFilterList);
         adapter.setOnListener(this);
 
-        LinearLayoutManager llm = new LinearLayoutManager(this);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRviContainer.setLayoutManager(llm);
         mRviContainer.setHasFixedSize(true);
@@ -73,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements UserAdapterRecycl
     }
 
     public void createChild(Item user) {
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
         final View view =  inflater.inflate(R.layout.edit_icon_tag, flexContainer, false);
         view.setTag(user);
         TextView tviItem = (TextView) view.findViewById(R.id.row_tviItem);
@@ -95,6 +103,21 @@ public class MainActivity extends AppCompatActivity implements UserAdapterRecycl
         //view.setOnClickListener(this);
         flexContainer.addView(view);
         //mUserTagList.add(user);
+    }
+
+    public void setUserList(List<? extends Item> userList) {
+        mUserList = (List<Item>) userList;
+        adapter = new UserAdapterRecyclerView();
+        adapter.setUserList(mUserList);
+        adapter.setUserTagList(mUserTagList);
+        adapter.setOnListener(this);
+
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRviContainer.setLayoutManager(llm);
+        mRviContainer.setHasFixedSize(true);
+        mRviContainer.setAdapter(adapter);
+        mRviContainer.setItemAnimator(null);
     }
 
     @Override public void onItemClick(Item user) {
